@@ -11,11 +11,14 @@ class SessionsController extends Controller
 
     public function __construct()
     {
-        $credentials = $this->validate($request, [
-            'email' => 'required|email|max:255',
-            'password' => 'required'
+        $this->middleware('guest',[
+            'only'=>['create']
         ]);
-     }
+    }
+    public function create()
+    {
+        return view('sessions.create');
+    }
 
     public function store(Request $request)
     {
@@ -39,13 +42,12 @@ class SessionsController extends Controller
            return redirect()->back()->withInput();
        }
     }
+
     public function destroy()
     {
         Auth::logout();
         session()->flash('success', '您已成功退出！');
         return redirect('login');
     }
-
-
 }
 
