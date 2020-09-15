@@ -11,14 +11,11 @@ class SessionsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('guest',[
-            'only'=>['create']
+        $credentials = $this->validate($request, [
+            'email' => 'required|email|max:255',
+            'password' => 'required'
         ]);
-    }
-    public function create()
-    {
-        return view('sessions.create');
-    }
+     }
 
     public function store(Request $request)
     {
@@ -28,9 +25,15 @@ class SessionsController extends Controller
        ]);
 
        if (Auth::attempt($credentials, $request->has('remember'))) {
-           session()->flash('success', '欢迎回来！');
-           $fallback = route('users.show', Auth::user());
-           return redirect()->intended($fallback);
+            if(Auth::user()->activated) {
+               session()->flash('success', '欢迎回来！');
+               $fallback = route('users.show', Auth::user());
+               return redirect()->intended($fallback);
+           } else {
+               Auth::logout();
+               session()->flash('warning', '你的账号未激活，请检查邮箱中的注册邮件进行激活。');
+               return redirect('/');
+           }
        } else {
            session()->flash('danger', '很抱歉，您的邮箱和密码不匹配');
            return redirect()->back()->withInput();
@@ -42,5 +45,7 @@ class SessionsController extends Controller
         session()->flash('success', '您已成功退出！');
         return redirect('login');
     }
+
+
 }
 

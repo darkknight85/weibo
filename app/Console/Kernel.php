@@ -15,7 +15,11 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
     ];
-
+    // //reset local db
+    // protected $commands = [
+    //     app\Console\Commands\ProjectResetCommand.php\Inspire::class,
+    //     app\Console\Commands\ProjectResetCommand.php\ProjectResetCommand::class,
+    // ];
     /**
      * Define the application's command schedule.
      *
